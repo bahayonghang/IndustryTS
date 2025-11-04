@@ -1,8 +1,8 @@
 //! Data transformation operations
 
 use crate::error::Result;
-use crate::timeseries::TimeSeriesData;
 use crate::pipeline::Operation;
+use crate::timeseries::TimeSeriesData;
 
 /// Standardize operation - z-score normalization
 pub struct StandardizeOperation {
@@ -33,22 +33,25 @@ impl Operation for StandardizeOperation {
 
             // Calculate mean and std
             let mean = series.mean().ok_or_else(|| {
-                crate::IndustrytsError::OperationError(
-                    format!("Cannot calculate mean for column: {}", col_name)
-                )
+                crate::IndustrytsError::OperationError(format!(
+                    "Cannot calculate mean for column: {}",
+                    col_name
+                ))
             })?;
 
             let std = series.std(1).ok_or_else(|| {
-                crate::IndustrytsError::OperationError(
-                    format!("Cannot calculate std for column: {}", col_name)
-                )
+                crate::IndustrytsError::OperationError(format!(
+                    "Cannot calculate std for column: {}",
+                    col_name
+                ))
             })?;
 
             // Avoid division by zero
             if std == 0.0 {
-                return Err(crate::IndustrytsError::OperationError(
-                    format!("Standard deviation is zero for column: {}", col_name)
-                ));
+                return Err(crate::IndustrytsError::OperationError(format!(
+                    "Standard deviation is zero for column: {}",
+                    col_name
+                )));
             }
 
             // Standardize: (x - mean) / std
@@ -96,23 +99,26 @@ impl Operation for NormalizeOperation {
 
             // Calculate min and max
             let min_val = series.min::<f64>()?.ok_or_else(|| {
-                crate::IndustrytsError::OperationError(
-                    format!("Cannot calculate min for column: {}", col_name)
-                )
+                crate::IndustrytsError::OperationError(format!(
+                    "Cannot calculate min for column: {}",
+                    col_name
+                ))
             })?;
 
             let max_val = series.max::<f64>()?.ok_or_else(|| {
-                crate::IndustrytsError::OperationError(
-                    format!("Cannot calculate max for column: {}", col_name)
-                )
+                crate::IndustrytsError::OperationError(format!(
+                    "Cannot calculate max for column: {}",
+                    col_name
+                ))
             })?;
 
             // Avoid division by zero
             let range = max_val - min_val;
             if range == 0.0 {
-                return Err(crate::IndustrytsError::OperationError(
-                    format!("Range is zero for column: {}", col_name)
-                ));
+                return Err(crate::IndustrytsError::OperationError(format!(
+                    "Range is zero for column: {}",
+                    col_name
+                )));
             }
 
             // Normalize: (x - min) / (max - min)

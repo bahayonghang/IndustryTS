@@ -1,8 +1,8 @@
 //! Feature engineering operations for time series data
 
 use crate::error::Result;
-use crate::timeseries::TimeSeriesData;
 use crate::pipeline::Operation;
+use crate::timeseries::TimeSeriesData;
 
 /// Lag operation - create lagged features
 pub struct LagOperation {
@@ -56,4 +56,3 @@ impl Operation for LagOperation {
 // TODO: Implement RollingOperation using LazyFrame API in future versions
 // Rolling window operations need to be implemented using Polars LazyFrame API
 // which has changed in version 0.51+
-

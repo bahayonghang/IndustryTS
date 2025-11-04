@@ -2,9 +2,9 @@
 //!
 //! This module provides Python bindings for the Rust-based industryts library.
 
+use industryts_core::{Pipeline as CorePipeline, TimeSeriesData as CoreTimeSeriesData};
 use pyo3::prelude::*;
 use pyo3_polars::PyDataFrame;
-use industryts_core::{TimeSeriesData as CoreTimeSeriesData, Pipeline as CorePipeline};
 
 /// Python wrapper for TimeSeriesData
 #[pyclass(name = "TimeSeriesData")]
@@ -63,6 +63,12 @@ impl PyTimeSeriesData {
 #[pyclass(name = "Pipeline")]
 pub struct PyPipeline {
     inner: CorePipeline,
+}
+
+impl Default for PyPipeline {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 #[pymethods]

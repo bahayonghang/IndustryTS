@@ -81,9 +81,8 @@ impl PipelineConfig {
 
     /// Serialize to TOML string
     pub fn to_toml_string(&self) -> crate::Result<String> {
-        toml::to_string_pretty(self).map_err(|e| {
-            crate::IndustrytsError::ConfigError(format!("Failed to serialize: {}", e))
-        })
+        toml::to_string_pretty(self)
+            .map_err(|e| crate::IndustrytsError::ConfigError(format!("Failed to serialize: {}", e)))
     }
 
     /// Save to TOML file

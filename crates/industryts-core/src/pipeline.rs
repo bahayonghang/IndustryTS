@@ -1,9 +1,9 @@
 //! Pipeline for chaining time series operations
 
+use crate::config::{OperationConfig, PipelineConfig};
 use crate::error::{IndustrytsError, Result};
-use crate::timeseries::TimeSeriesData;
-use crate::config::{PipelineConfig, OperationConfig};
 use crate::operations::*;
+use crate::timeseries::TimeSeriesData;
 use std::path::Path;
 
 /// Trait for time series operations
@@ -59,12 +59,13 @@ impl Pipeline {
                 // TODO: Resample operation requires updating to Polars 0.51 API
                 // The group_by_dynamic API has changed significantly
                 Err(IndustrytsError::InvalidOperation(
-                    "Resample operation is not yet implemented for Polars 0.51+".to_string()
+                    "Resample operation is not yet implemented for Polars 0.51+".to_string(),
                 ))
             }
-            OperationConfig::Lag { periods, columns } => {
-                Ok(Box::new(LagOperation::new(periods.clone(), columns.clone())))
-            }
+            OperationConfig::Lag { periods, columns } => Ok(Box::new(LagOperation::new(
+                periods.clone(),
+                columns.clone(),
+            ))),
             OperationConfig::Standardize { columns } => {
                 Ok(Box::new(StandardizeOperation::new(columns.clone())))
             }

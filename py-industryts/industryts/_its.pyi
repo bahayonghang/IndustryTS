@@ -5,7 +5,6 @@ It should be kept in sync with the actual Rust implementation in py-industryts/s
 """
 
 from __future__ import annotations
-from typing import Any
 
 import polars as pl
 

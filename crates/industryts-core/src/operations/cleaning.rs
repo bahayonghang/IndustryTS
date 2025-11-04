@@ -1,9 +1,9 @@
 //! Data cleaning operations
 
-use crate::error::Result;
-use crate::timeseries::TimeSeriesData;
-use crate::pipeline::Operation;
 use crate::config::FillMethod;
+use crate::error::Result;
+use crate::pipeline::Operation;
+use crate::timeseries::TimeSeriesData;
 use polars::prelude::*;
 
 /// Fill null operation
@@ -53,14 +53,26 @@ impl Operation for FillNullOperation {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use polars::prelude::*;
 
     #[test]
     fn test_fill_null_forward() {
-        let df = df! {
-            "time" => &[1, 2, 3, 4],
-            "value" => &[Some(1.0), None, None, Some(4.0)],
-        }
+        use polars::prelude::*;
+
+        // Create datetime series from milliseconds since epoch
+        let dates_ms = vec![
+            1704067200000i64, // 2024-01-01
+            1704153600000,    // 2024-01-02
+            1704240000000,    // 2024-01-03
+            1704326400000,    // 2024-01-04
+        ];
+        let time_series = Series::new("time".into(), dates_ms)
+            .cast(&DataType::Datetime(TimeUnit::Milliseconds, None))
+            .unwrap();
+
+        let df = DataFrame::new(vec![
+            time_series.into(),
+            Series::new("value".into(), &[Some(1.0), None, None, Some(4.0)]).into(),
+        ])
         .unwrap();
 
         let ts = TimeSeriesData::new(df, Some("time")).unwrap();

@@ -1,7 +1,7 @@
 //! Time series data structure and operations
 
-use polars::prelude::*;
 use crate::error::{IndustrytsError, Result};
+use polars::prelude::*;
 
 /// Core time series data structure wrapping a Polars DataFrame
 #[derive(Clone)]
@@ -66,7 +66,11 @@ impl TimeSeriesData {
         ];
 
         for name in &common_names {
-            if df.get_column_names().iter().any(|col| col.as_str() == *name) {
+            if df
+                .get_column_names()
+                .iter()
+                .any(|col| col.as_str() == *name)
+            {
                 return Ok(name.to_string());
             }
         }
@@ -132,14 +136,21 @@ impl TimeSeriesData {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use polars::prelude::*;
 
     #[test]
     fn test_time_column_detection() {
-        let df = df! {
-            "DateTime" => &[1, 2, 3],
-            "value" => &[10.0, 20.0, 30.0],
-        }
+        use polars::prelude::*;
+
+        // Create datetime series from milliseconds since epoch
+        let dates_ms = vec![1704067200000i64, 1704153600000, 1704240000000];
+        let time_series = Series::new("DateTime".into(), dates_ms)
+            .cast(&DataType::Datetime(TimeUnit::Milliseconds, None))
+            .unwrap();
+
+        let df = DataFrame::new(vec![
+            time_series.into(),
+            Series::new("value".into(), &[10.0, 20.0, 30.0]).into(),
+        ])
         .unwrap();
 
         let detected = TimeSeriesData::detect_time_column(&df).unwrap();
@@ -148,11 +159,19 @@ mod tests {
 
     #[test]
     fn test_feature_columns() {
-        let df = df! {
-            "DateTime" => &[1, 2, 3],
-            "temp" => &[10.0, 20.0, 30.0],
-            "pressure" => &[100.0, 200.0, 300.0],
-        }
+        use polars::prelude::*;
+
+        // Create datetime series from milliseconds since epoch
+        let dates_ms = vec![1704067200000i64, 1704153600000, 1704240000000];
+        let time_series = Series::new("DateTime".into(), dates_ms)
+            .cast(&DataType::Datetime(TimeUnit::Milliseconds, None))
+            .unwrap();
+
+        let df = DataFrame::new(vec![
+            time_series.into(),
+            Series::new("temp".into(), &[10.0, 20.0, 30.0]).into(),
+            Series::new("pressure".into(), &[100.0, 200.0, 300.0]).into(),
+        ])
         .unwrap();
 
         let ts = TimeSeriesData::new(df, Some("DateTime")).unwrap();

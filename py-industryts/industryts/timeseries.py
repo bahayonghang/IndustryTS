@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 import polars as pl
 
@@ -40,7 +40,7 @@ class TimeSeriesData:
     def __init__(
         self,
         data: pl.DataFrame,
-        time_column: Optional[str] = None,
+        time_column: str | None = None,
     ) -> None:
         """Create a new TimeSeriesData instance.
 
@@ -94,7 +94,7 @@ class TimeSeriesData:
     def from_csv(
         cls,
         path: str | Path,
-        time_column: Optional[str] = None,
+        time_column: str | None = None,
         **kwargs: Any,
     ) -> TimeSeriesData:
         """Load time series data from CSV file.
@@ -126,7 +126,7 @@ class TimeSeriesData:
     def from_parquet(
         cls,
         path: str | Path,
-        time_column: Optional[str] = None,
+        time_column: str | None = None,
         **kwargs: Any,
     ) -> TimeSeriesData:
         """Load time series data from Parquet file.
