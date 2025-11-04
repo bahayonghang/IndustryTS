@@ -10,6 +10,11 @@ This example demonstrates:
 
 import polars as pl
 from datetime import datetime, timedelta
+from pathlib import Path
+
+# Get the directory where this script is located
+SCRIPT_DIR = Path(__file__).parent
+CONFIG_DIR = SCRIPT_DIR / "configs"
 
 # Create sample time series data
 print("Creating sample time series data...")
@@ -44,7 +49,8 @@ try:
 
     # Load pipeline from config
     print("Loading pipeline from config...")
-    pipeline = its.Pipeline.from_toml("examples/configs/feature_engineering.toml")
+    config_path = CONFIG_DIR / "feature_engineering.toml"
+    pipeline = its.Pipeline.from_toml(str(config_path))
     print(f"Pipeline loaded with {len(pipeline)} operations")
     print()
 

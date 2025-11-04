@@ -148,6 +148,56 @@ Benchmarks on a dataset with 1M rows × 10 features:
 
 ## Documentation
 
+📚 **[Full Documentation](./docs/)** - Comprehensive guides and API reference
+
+- **[English Documentation](./docs/en/)** - Get started, user guides, API reference, examples
+- **[中文文档](./docs/zh/)** - 入门指南、用户手册、API 参考、示例
+
+Quick links:
+- [Installation Guide](./docs/en/guide/installation.md) | [安装指南](./docs/zh/guide/installation.md)
+- [Quick Start](./docs/en/guide/quick-start.md) | [快速开始](./docs/zh/guide/quick-start.md)
+- [API Reference](./docs/en/api/timeseries.md) | [API 参考](./docs/zh/api/timeseries.md)
+- [TOML Configuration](./docs/en/guide/toml/structure.md) | [TOML 配置](./docs/zh/guide/toml/structure.md)
+- [Examples](./docs/en/examples/basic.md) | [示例](./docs/zh/examples/basic.md)
+
+### Building Documentation
+
+**Option 1: Using just (Recommended)**
+
+```bash
+cd docs
+just dev      # Auto-install dependencies and start dev server
+just build    # Build for production
+just --list   # Show all commands
+```
+
+**Option 2: Using make**
+
+```bash
+# Install documentation dependencies
+make docs-install
+
+# Start development server (with live reload)
+make docs-dev
+
+# Build for production
+make docs-build
+```
+
+**Option 3: Using npm directly**
+
+```bash
+cd docs
+npm install
+npm run docs:dev
+```
+
+See [docs/README.md](./docs/README.md) for detailed documentation development guide.
+
+## Documentation (Old Links)
+
+The following links point to online documentation (to be deployed):
+
 - [User Guide](https://industryts.readthedocs.io/)
 - [API Reference](https://industryts.readthedocs.io/api/)
 - [Examples](./examples/)

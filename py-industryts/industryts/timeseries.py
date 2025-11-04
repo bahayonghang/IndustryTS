@@ -115,6 +115,10 @@ class TimeSeriesData:
             ...     parse_dates=True
             ... )
         """
+        # Try to parse dates automatically if not specified
+        if "try_parse_dates" not in kwargs:
+            kwargs["try_parse_dates"] = True
+
         df = pl.read_csv(path, **kwargs)
         return cls(df, time_column)
 

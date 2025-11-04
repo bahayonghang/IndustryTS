@@ -68,8 +68,22 @@ bench:  ## Run benchmarks
 	@echo "Running Python benchmarks..."
 	uv run pytest py-industryts/tests --benchmark-only
 
-doc:  ## Build documentation
-	@echo "Building documentation..."
-	cd docs && make html
+docs-install:  ## Install documentation dependencies
+	@echo "Installing documentation dependencies..."
+	cd docs && npm install
+
+docs-dev:  ## Start VitePress development server
+	@echo "Starting VitePress development server..."
+	cd docs && npm run docs:dev
+
+docs-build:  ## Build VitePress documentation for production
+	@echo "Building VitePress documentation..."
+	cd docs && npm run docs:build
+
+docs-preview:  ## Preview built documentation
+	@echo "Previewing documentation..."
+	cd docs && npm run docs:preview
+
+doc: docs-build  ## Alias for docs-build (for backward compatibility)
 
 .DEFAULT_GOAL := help
