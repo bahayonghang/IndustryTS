@@ -71,3 +71,8 @@ output.csv
 # OS
 .DS_Store
 Thumbs.db
+
+
+.claude/
+openspec/
+.spec-workflow/
