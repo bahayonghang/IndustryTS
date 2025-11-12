@@ -1,19 +1,11 @@
-//! Pipeline for chaining time series operations
+//! Pipeline execution engine
+//!
+//! This module provides the main Pipeline struct that executes a sequence of operations.
 
-use crate::config::{OperationConfig, PipelineConfig};
-use crate::error::{IndustrytsError, Result};
-use crate::operations::*;
-use crate::timeseries::TimeSeriesData;
+use crate::config::PipelineConfig;
+use crate::core::{ExecutionContext, Operation, TimeSeriesData};
+use crate::error::Result;
 use std::path::Path;
-
-/// Trait for time series operations
-pub trait Operation: Send + Sync {
-    /// Execute the operation on time series data
-    fn execute(&self, data: TimeSeriesData) -> Result<TimeSeriesData>;
-
-    /// Get the name of the operation
-    fn name(&self) -> &str;
-}
 
 /// Pipeline that chains multiple operations
 pub struct Pipeline {
@@ -46,7 +38,10 @@ impl Pipeline {
     }
 
     /// Create an operation from configuration
-    fn create_operation(config: &OperationConfig) -> Result<Box<dyn Operation>> {
+    fn create_operation(config: &crate::config::OperationConfig) -> Result<Box<dyn Operation>> {
+        use crate::config::OperationConfig;
+        use crate::operations::*;
+
         match config {
             OperationConfig::FillNull { method, columns } => {
                 Ok(Box::new(FillNullOperation::new(*method, columns.clone())))
@@ -57,8 +52,7 @@ impl Pipeline {
                 columns: _,
             } => {
                 // TODO: Resample operation requires updating to Polars 0.51 API
-                // The group_by_dynamic API has changed significantly
-                Err(IndustrytsError::InvalidOperation(
+                Err(crate::IndustrytsError::InvalidOperation(
                     "Resample operation is not yet implemented for Polars 0.51+".to_string(),
                 ))
             }
@@ -85,6 +79,34 @@ impl Pipeline {
         Ok(data)
     }
 
+    /// Execute the pipeline with execution context tracking
+    pub fn process_with_context(
+        &self,
+        mut data: TimeSeriesData,
+        mut context: ExecutionContext,
+    ) -> Result<(TimeSeriesData, ExecutionContext)> {
+        for operation in &self.operations {
+            let input_rows = data.len();
+            let input_columns = data.feature_columns().len();
+
+            data = operation.execute(data)?;
+
+            let output_rows = data.len();
+            let output_columns = data.feature_columns().len();
+
+            let mut metrics = crate::core::context::OperationMetrics::new(
+                operation.name().to_string(),
+            );
+            metrics.input_rows = input_rows;
+            metrics.output_rows = output_rows;
+            metrics.input_columns = input_columns;
+            metrics.output_columns = output_columns;
+
+            context.record_metrics(metrics);
+        }
+        Ok((data, context))
+    }
+
     /// Get number of operations in the pipeline
     pub fn len(&self) -> usize {
         self.operations.len()
@@ -101,7 +123,7 @@ impl Pipeline {
             config.to_toml_file(path.as_ref())?;
             Ok(())
         } else {
-            Err(IndustrytsError::ConfigError(
+            Err(crate::IndustrytsError::ConfigError(
                 "Pipeline has no configuration to save".to_string(),
             ))
         }

@@ -28,7 +28,7 @@ from __future__ import annotations
 __version__ = "0.1.0"
 
 # Import Rust binding module (compiled by PyO3)
-from industryts import _its  # type: ignore  # noqa: F401
+from industryts import _its  # noqa: F401
 
 # Import Python wrappers
 from industryts.pipeline import Pipeline

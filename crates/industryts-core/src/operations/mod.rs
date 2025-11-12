@@ -1,18 +1,17 @@
 //! Time series operations module
 //!
-//! This module provides various operations for time series data processing:
-//! - Cleaning: data cleaning and null handling
-//! - Time: time-based operations like resampling (TODO: needs Polars 0.51 API update)
-//! - Features: feature engineering operations like lag and rolling
-//! - Transform: data transformation operations like standardization
+//! This module provides various operations for time series data processing organized by category:
+//! - data_quality: data cleaning and validation
+//! - temporal: time-based operations
+//! - features: feature engineering operations
+//! - transform: data transformation operations
 
-pub mod cleaning;
-// pub mod time;  // TODO: Resample needs Polars 0.51 API update
+pub mod data_quality;
 pub mod features;
+pub mod temporal;
 pub mod transform;
 
-// Re-export operation implementations
-pub use cleaning::*;
-// pub use time::*;  // TODO: Resample needs Polars 0.51 API update
+// Re-export all operations for backward compatibility
+pub use data_quality::FillNullOperation;
 pub use features::LagOperation;
 pub use transform::*;

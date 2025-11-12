@@ -1,8 +1,7 @@
 //! Feature engineering operations for time series data
 
+use crate::core::{Operation, TimeSeriesData};
 use crate::error::Result;
-use crate::pipeline::Operation;
-use crate::timeseries::TimeSeriesData;
 
 /// Lag operation - create lagged features
 pub struct LagOperation {
