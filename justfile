@@ -158,9 +158,10 @@ example:
     @echo "📝 Running example script..."
     uv run python examples/basic_usage.py
 
-# Full CI workflow: check → test → typecheck
+# Full CI workflow: check → test → typecheck → lint
+# Mirrors GitHub CI: rust-check + python-lint + python-test
 # Run this before committing to ensure all checks pass
-ci: check test typecheck
+ci: check test lint typecheck
     @echo "✅ All CI checks passed!"
 
 # Setup development environment (one-time setup)
