@@ -67,10 +67,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Python
+      - name: Set up Python 3.12
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: '3.12'
 
       - name: Cache pip packages
         uses: actions/cache@v4
@@ -97,23 +97,18 @@ jobs:
       - name: Run pyright
         run: pyright py-industryts/industryts
 
-  # Python 测试（多版本矩阵）
+  # Python 测试（Python 3.12）
   python-test:
-    name: Python Test (py${{ matrix.python-version }})
+    name: Python Test (py3.12)
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        python-version: ['3.9', '3.10', '3.11', '3.12', '3.13']
-    
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Python ${{ matrix.python-version }}
+      - name: Set up Python 3.12
         uses: actions/setup-python@v5
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: '3.12'
 
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@stable
@@ -125,9 +120,9 @@ jobs:
             ~/.cargo/registry
             ~/.cargo/git
             target
-          key: ${{ runner.os }}-cargo-py${{ matrix.python-version }}-${{ hashFiles('**/Cargo.lock') }}
+          key: ${{ runner.os }}-cargo-py3.12-${{ hashFiles('**/Cargo.lock') }}
           restore-keys: |
-            ${{ runner.os }}-cargo-py${{ matrix.python-version }}-
+            ${{ runner.os }}-cargo-py3.12-
 
       - name: Install uv
         uses: astral-sh/setup-uv@v2
@@ -144,7 +139,6 @@ jobs:
 
       - name: Run Python tests
         run: uv run pytest py-industryts/tests -v
-        continue-on-error: ${{ matrix.python-version == '3.13' }}  # 3.13 可能有兼容性问题
 
   # 集成检查（确保所有检查通过）
   all-checks:
