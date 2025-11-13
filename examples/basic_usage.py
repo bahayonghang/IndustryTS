@@ -8,9 +8,10 @@ This example demonstrates:
 4. Exporting results
 """
 
-import polars as pl
-from datetime import datetime, timedelta
+from datetime import datetime
 from pathlib import Path
+
+import polars as pl
 
 # Get the directory where this script is located
 SCRIPT_DIR = Path(__file__).parent
